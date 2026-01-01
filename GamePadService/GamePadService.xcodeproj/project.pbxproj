@@ -1,0 +1,563 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		18CF0EA72ED2E9B100FEA12D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 18CF0E8E2ED2E9AF00FEA12D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 18CF0E952ED2E9AF00FEA12D;
+			remoteInfo = GamePadService;
+		};
+		18CF0EB12ED2E9B100FEA12D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 18CF0E8E2ED2E9AF00FEA12D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 18CF0E952ED2E9AF00FEA12D;
+			remoteInfo = GamePadService;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		18CF0E962ED2E9AF00FEA12D /* GamePadService.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GamePadService.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		18CF0EA62ED2E9B100FEA12D /* GamePadServiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GamePadServiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		18CF0EB02ED2E9B100FEA12D /* GamePadServiceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GamePadServiceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		18CF0E982ED2E9AF00FEA12D /* GamePadService */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = GamePadService;
+			sourceTree = "<group>";
+		};
+		18CF0EA92ED2E9B100FEA12D /* GamePadServiceTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = GamePadServiceTests;
+			sourceTree = "<group>";
+		};
+		18CF0EB32ED2E9B100FEA12D /* GamePadServiceUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = GamePadServiceUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		18CF0E932ED2E9AF00FEA12D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		18CF0EA32ED2E9B100FEA12D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		18CF0EAD2ED2E9B100FEA12D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		18CF0E8D2ED2E9AF00FEA12D = {
+			isa = PBXGroup;
+			children = (
+				18CF0E982ED2E9AF00FEA12D /* GamePadService */,
+				18CF0EA92ED2E9B100FEA12D /* GamePadServiceTests */,
+				18CF0EB32ED2E9B100FEA12D /* GamePadServiceUITests */,
+				18CF0E972ED2E9AF00FEA12D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		18CF0E972ED2E9AF00FEA12D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				18CF0E962ED2E9AF00FEA12D /* GamePadService.app */,
+				18CF0EA62ED2E9B100FEA12D /* GamePadServiceTests.xctest */,
+				18CF0EB02ED2E9B100FEA12D /* GamePadServiceUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		18CF0E952ED2E9AF00FEA12D /* GamePadService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18CF0EBA2ED2E9B100FEA12D /* Build configuration list for PBXNativeTarget "GamePadService" */;
+			buildPhases = (
+				18CF0E922ED2E9AF00FEA12D /* Sources */,
+				18CF0E932ED2E9AF00FEA12D /* Frameworks */,
+				18CF0E942ED2E9AF00FEA12D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				18CF0E982ED2E9AF00FEA12D /* GamePadService */,
+			);
+			name = GamePadService;
+			packageProductDependencies = (
+			);
+			productName = GamePadService;
+			productReference = 18CF0E962ED2E9AF00FEA12D /* GamePadService.app */;
+			productType = "com.apple.product-type.application";
+		};
+		18CF0EA52ED2E9B100FEA12D /* GamePadServiceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18CF0EBD2ED2E9B100FEA12D /* Build configuration list for PBXNativeTarget "GamePadServiceTests" */;
+			buildPhases = (
+				18CF0EA22ED2E9B100FEA12D /* Sources */,
+				18CF0EA32ED2E9B100FEA12D /* Frameworks */,
+				18CF0EA42ED2E9B100FEA12D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				18CF0EA82ED2E9B100FEA12D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				18CF0EA92ED2E9B100FEA12D /* GamePadServiceTests */,
+			);
+			name = GamePadServiceTests;
+			packageProductDependencies = (
+			);
+			productName = GamePadServiceTests;
+			productReference = 18CF0EA62ED2E9B100FEA12D /* GamePadServiceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		18CF0EAF2ED2E9B100FEA12D /* GamePadServiceUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18CF0EC02ED2E9B100FEA12D /* Build configuration list for PBXNativeTarget "GamePadServiceUITests" */;
+			buildPhases = (
+				18CF0EAC2ED2E9B100FEA12D /* Sources */,
+				18CF0EAD2ED2E9B100FEA12D /* Frameworks */,
+				18CF0EAE2ED2E9B100FEA12D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				18CF0EB22ED2E9B100FEA12D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				18CF0EB32ED2E9B100FEA12D /* GamePadServiceUITests */,
+			);
+			name = GamePadServiceUITests;
+			packageProductDependencies = (
+			);
+			productName = GamePadServiceUITests;
+			productReference = 18CF0EB02ED2E9B100FEA12D /* GamePadServiceUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		18CF0E8E2ED2E9AF00FEA12D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					18CF0E952ED2E9AF00FEA12D = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					18CF0EA52ED2E9B100FEA12D = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 18CF0E952ED2E9AF00FEA12D;
+					};
+					18CF0EAF2ED2E9B100FEA12D = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 18CF0E952ED2E9AF00FEA12D;
+					};
+				};
+			};
+			buildConfigurationList = 18CF0E912ED2E9AF00FEA12D /* Build configuration list for PBXProject "GamePadService" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 18CF0E8D2ED2E9AF00FEA12D;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 18CF0E972ED2E9AF00FEA12D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				18CF0E952ED2E9AF00FEA12D /* GamePadService */,
+				18CF0EA52ED2E9B100FEA12D /* GamePadServiceTests */,
+				18CF0EAF2ED2E9B100FEA12D /* GamePadServiceUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		18CF0E942ED2E9AF00FEA12D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		18CF0EA42ED2E9B100FEA12D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		18CF0EAE2ED2E9B100FEA12D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		18CF0E922ED2E9AF00FEA12D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		18CF0EA22ED2E9B100FEA12D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		18CF0EAC2ED2E9B100FEA12D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		18CF0EA82ED2E9B100FEA12D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 18CF0E952ED2E9AF00FEA12D /* GamePadService */;
+			targetProxy = 18CF0EA72ED2E9B100FEA12D /* PBXContainerItemProxy */;
+		};
+		18CF0EB22ED2E9B100FEA12D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 18CF0E952ED2E9AF00FEA12D /* GamePadService */;
+			targetProxy = 18CF0EB12ED2E9B100FEA12D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		18CF0EB82ED2E9B100FEA12D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		18CF0EB92ED2E9B100FEA12D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		18CF0EBB2ED2E9B100FEA12D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GamePadService/Preview Content\"";
+				DEVELOPMENT_TEAM = 95YPL3DFGZ;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = google.GamePadService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		18CF0EBC2ED2E9B100FEA12D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"GamePadService/Preview Content\"";
+				DEVELOPMENT_TEAM = 95YPL3DFGZ;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = google.GamePadService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		18CF0EBE2ED2E9B100FEA12D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YBX222C8Q4;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = google.GamePadServiceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GamePadService.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GamePadService";
+			};
+			name = Debug;
+		};
+		18CF0EBF2ED2E9B100FEA12D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YBX222C8Q4;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = google.GamePadServiceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GamePadService.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GamePadService";
+			};
+			name = Release;
+		};
+		18CF0EC12ED2E9B100FEA12D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YBX222C8Q4;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = google.GamePadServiceUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = GamePadService;
+			};
+			name = Debug;
+		};
+		18CF0EC22ED2E9B100FEA12D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YBX222C8Q4;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = google.GamePadServiceUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = GamePadService;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		18CF0E912ED2E9AF00FEA12D /* Build configuration list for PBXProject "GamePadService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18CF0EB82ED2E9B100FEA12D /* Debug */,
+				18CF0EB92ED2E9B100FEA12D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18CF0EBA2ED2E9B100FEA12D /* Build configuration list for PBXNativeTarget "GamePadService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18CF0EBB2ED2E9B100FEA12D /* Debug */,
+				18CF0EBC2ED2E9B100FEA12D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18CF0EBD2ED2E9B100FEA12D /* Build configuration list for PBXNativeTarget "GamePadServiceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18CF0EBE2ED2E9B100FEA12D /* Debug */,
+				18CF0EBF2ED2E9B100FEA12D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18CF0EC02ED2E9B100FEA12D /* Build configuration list for PBXNativeTarget "GamePadServiceUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18CF0EC12ED2E9B100FEA12D /* Debug */,
+				18CF0EC22ED2E9B100FEA12D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 18CF0E8E2ED2E9AF00FEA12D /* Project object */;
+}
