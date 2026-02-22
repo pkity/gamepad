@@ -4,12 +4,16 @@
 //
 
 import Foundation
+import UniformTypeIdentifiers
 
 enum ConfigError: Error {
     case fileNotFound
     case invalidFormat
     case duplicateActivationCombo(String)
     case invalidMapping
+    case saveFailed
+    case importFailed
+    case exportFailed
 }
 
 class ConfigurationManager {
@@ -23,6 +27,8 @@ class ConfigurationManager {
         configDirectory = appSupport.appendingPathComponent("GamePadToKey/Configs")
         createConfigDirectoryIfNeeded()
     }
+    
+    // MARK: - 配置管理
     
     func loadConfiguration(named: String) throws -> Configuration {
         let configURL = configDirectory.appendingPathComponent("\(named).json")
@@ -58,6 +64,32 @@ class ConfigurationManager {
         try data.write(to: configURL)
     }
     
+    func deleteConfiguration(named: String) throws {
+        let configURL = configDirectory.appendingPathComponent("\(named).json")
+        
+        guard fileManager.fileExists(atPath: configURL.path) else {
+            throw ConfigError.fileNotFound
+        }
+        
+        try fileManager.removeItem(at: configURL)
+    }
+    
+    func duplicateConfiguration(named: String, newName: String) throws {
+        let sourceURL = configDirectory.appendingPathComponent("\(named).json")
+        let destinationURL = configDirectory.appendingPathComponent("\(newName).json")
+        
+        guard fileManager.fileExists(atPath: sourceURL.path) else {
+            throw ConfigError.fileNotFound
+        }
+        
+        // 检查目标文件是否已存在
+        if fileManager.fileExists(atPath: destinationURL.path) {
+            throw ConfigError.duplicateActivationCombo("配置名称已存在")
+        }
+        
+        try fileManager.copyItem(at: sourceURL, to: destinationURL)
+    }
+    
     func getAvailableConfigs() -> [String] {
         do {
             let files = try fileManager.contentsOfDirectory(at: configDirectory,
@@ -65,17 +97,58 @@ class ConfigurationManager {
             return files
                 .filter { $0.pathExtension == "json" }
                 .map { $0.deletingPathExtension().lastPathComponent }
+                .sorted()
         } catch {
             return []
         }
     }
     
-    private func createConfigDirectoryIfNeeded() {
-        if !fileManager.fileExists(atPath: configDirectory.path) {
-            try? fileManager.createDirectory(at: configDirectory,
-                                           withIntermediateDirectories: true)
+    // MARK: - 导入导出
+    
+    func importConfiguration(from url: URL) throws -> Configuration {
+        let data = try Data(contentsOf: url)
+        
+        let decoder = JSONDecoder()
+        let config = try decoder.decode(Configuration.self, from: data)
+        
+        // 验证配置
+        try validateConfiguration(config)
+        
+        // 保存到配置目录
+        let configURL = configDirectory
+            .appendingPathComponent(config.name)
+            .appendingPathExtension("json")
+        
+        // 如果已存在，添加时间戳
+        var finalURL = configURL
+        if fileManager.fileExists(atPath: configURL.path) {
+            let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short)
+                .replacingOccurrences(of: "/", with: "-")
+                .replacingOccurrences(of: ":", with: "-")
+            let newName = "\(config.name)_导入_\(timestamp)"
+            finalURL = configDirectory
+                .appendingPathComponent(newName)
+                .appendingPathExtension("json")
         }
+        
+        try data.write(to: finalURL)
+        return config
     }
+    
+    func exportConfiguration(_ config: Configuration, to url: URL) throws {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        
+        let data = try encoder.encode(config)
+        try data.write(to: url)
+    }
+    
+    func getExportURL(for configName: String) -> URL {
+        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return documentsURL.appendingPathComponent("\(configName).json")
+    }
+    
+    // MARK: - 配置验证
     
     private func validateConfiguration(_ config: Configuration) throws {
         // 检查激活组合键冲突
@@ -95,6 +168,15 @@ class ConfigurationManager {
         
         for partition in config.partitions {
             try checkPartition(partition)
+        }
+    }
+    
+    // MARK: - 辅助方法
+    
+    private func createConfigDirectoryIfNeeded() {
+        if !fileManager.fileExists(atPath: configDirectory.path) {
+            try? fileManager.createDirectory(at: configDirectory,
+                                           withIntermediateDirectories: true)
         }
     }
     

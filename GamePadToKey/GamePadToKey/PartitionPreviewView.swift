@@ -7,18 +7,23 @@ import SwiftUI
 
 struct PartitionPreviewView: View {
     @ObservedObject var viewModel: ContentViewModel
-    @State private var selectedPartition: String?
+    @State private var selectedPartitionId: String?
     @State private var partitionTree: [PartitionNode] = []
+    @State private var selectedPartitionNode: PartitionNode?
     
     var body: some View {
         HSplitView {
             // 左侧：分区树
-            PartitionTreeView(partitions: partitionTree, selectedPartition: $selectedPartition)
-                .frame(minWidth: 200, maxWidth: 300)
+            PartitionTreeView(
+                partitions: partitionTree,
+                selectedPartitionId: $selectedPartitionId,
+                selectedPartitionNode: $selectedPartitionNode
+            )
+            .frame(minWidth: 200, maxWidth: 300)
             
             // 右侧：分区详情
-            if let partitionName = selectedPartition {
-                PartitionDetailView(partitionName: partitionName)
+            if let partitionNode = selectedPartitionNode {
+                PartitionDetailContentView(partition: partitionNode)
             } else {
                 VStack {
                     Image(systemName: "square.grid.3x3")
@@ -34,7 +39,9 @@ struct PartitionPreviewView: View {
             loadPartitionTree()
         }
         .onChange(of: viewModel.currentPartition) { newValue in
-            selectedPartition = newValue
+            selectedPartitionId = newValue
+            // 根据ID查找对应的节点
+            selectedPartitionNode = findPartitionNode(by: newValue, in: partitionTree)
         }
     }
     
@@ -69,11 +76,27 @@ struct PartitionPreviewView: View {
         
         return [root]
     }
+    
+    private func findPartitionNode(by id: String?, in nodes: [PartitionNode]) -> PartitionNode? {
+        guard let id = id else { return nil }
+        
+        for node in nodes {
+            if node.id == id {
+                return node
+            }
+            if let found = findPartitionNode(by: id, in: node.children) {
+                return found
+            }
+        }
+        return nil
+    }
 }
+
 // 分区树视图
 struct PartitionTreeView: View {
     let partitions: [PartitionNode]
-    @Binding var selectedPartition: String?
+    @Binding var selectedPartitionId: String?
+    @Binding var selectedPartitionNode: PartitionNode?
     
     var body: some View {
         VStack(spacing: 0) {
@@ -96,7 +119,12 @@ struct PartitionTreeView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 4) {
                     ForEach(partitions, id: \.id) { partition in
-                        PartitionTreeNodeView(node: partition, selectedPartition: $selectedPartition, level: 0)
+                        PartitionTreeNodeContentView(
+                            node: partition,
+                            selectedPartitionId: $selectedPartitionId,
+                            selectedPartitionNode: $selectedPartitionNode,
+                            level: 0
+                        )
                     }
                 }
                 .padding()
@@ -109,10 +137,11 @@ struct PartitionTreeView: View {
     }
 }
 
-// 分区树节点视图
-struct PartitionTreeNodeView: View {
+// 分区树节点视图（重命名以避免冲突）
+struct PartitionTreeNodeContentView: View {
     let node: PartitionNode
-    @Binding var selectedPartition: String?
+    @Binding var selectedPartitionId: String?
+    @Binding var selectedPartitionNode: PartitionNode?
     let level: Int
     @State private var isExpanded = true
     
@@ -165,23 +194,29 @@ struct PartitionTreeNodeView: View {
                 }
                 
                 // 选中指示器
-                if selectedPartition == node.id {
+                if selectedPartitionId == node.id {
                     Image(systemName: "checkmark")
                         .foregroundColor(.blue)
                 }
             }
             .padding(.vertical, 4)
             .padding(.horizontal, 8)
-            .background(selectedPartition == node.id ? Color.blue.opacity(0.1) : Color.clear)
+            .background(selectedPartitionId == node.id ? Color.blue.opacity(0.1) : Color.clear)
             .cornerRadius(6)
             .onTapGesture {
-                selectedPartition = node.id
+                selectedPartitionId = node.id
+                selectedPartitionNode = node
             }
             
             // 子节点
             if isExpanded && !node.children.isEmpty {
                 ForEach(node.children, id: \.id) { child in
-                    PartitionTreeNodeView(node: child, selectedPartition: $selectedPartition, level: level + 1)
+                    PartitionTreeNodeContentView(
+                        node: child,
+                        selectedPartitionId: $selectedPartitionId,
+                        selectedPartitionNode: $selectedPartitionNode,
+                        level: level + 1
+                    )
                 }
             }
         }
@@ -206,27 +241,23 @@ struct PartitionTreeNodeView: View {
     }
 }
 
-// 分区详情视图
-struct PartitionDetailView: View {
-    let partitionName: String
-    @State private var partitionInfo: PartitionNode?
-    @State private var mappings: [String: Mapping] = [:]
+// 分区详情内容视图（重命名以避免冲突）
+struct PartitionDetailContentView: View {
+    let partition: PartitionNode
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 // 分区基本信息
                 VStack(alignment: .leading, spacing: 12) {
-                    Text(partitionName)
+                    Text(partition.name)
                         .font(.title)
                         .fontWeight(.bold)
                     
-                    if let partition = partitionInfo {
-                        HStack(spacing: 20) {
-                            InfoRow(label: "类型:", value: stringForPartitionType(partition.type))
-                            InfoRow(label: "激活组合:", value: partition.activationCombo.joined(separator: "+"))
-                            InfoRow(label: "子分区数:", value: "\(partition.children.count)")
-                        }
+                    HStack(spacing: 20) {
+                        InfoRow(label: "类型:", value: stringForPartitionType(partition.type))
+                        InfoRow(label: "激活组合:", value: partition.activationCombo.joined(separator: "+"))
+                        InfoRow(label: "子分区数:", value: "\(partition.children.count)")
                     }
                 }
                 .padding()
@@ -234,73 +265,80 @@ struct PartitionDetailView: View {
                 .cornerRadius(12)
                 
                 // 按钮映射
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("按钮映射")
-                        .font(.headline)
-                    
-                    if mappings.isEmpty {
-                        Text("暂无映射配置")
-                            .foregroundColor(.secondary)
-                            .padding()
-                    } else {
+                if !partition.mappings.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("按钮映射")
+                            .font(.headline)
+                        
                         LazyVGrid(columns: [
                             GridItem(.flexible()),
                             GridItem(.flexible()),
                             GridItem(.flexible())
                         ], spacing: 12) {
-                            ForEach(Array(mappings.keys.sorted()), id: \.self) { button in
-                                if let mapping = mappings[button] {
+                            ForEach(Array(partition.mappings.keys.sorted()), id: \.self) { button in
+                                if let mapping = partition.mappings[button] {
                                     MappingCard(button: button, mapping: mapping)
                                 }
                             }
                         }
                     }
+                    .padding()
+                    .background(Color(NSColor.controlBackgroundColor))
+                    .cornerRadius(12)
                 }
-                .padding()
-                .background(Color(NSColor.controlBackgroundColor))
-                .cornerRadius(12)
                 
                 // 摇杆映射
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("摇杆映射")
-                        .font(.headline)
-                    
-                    HStack(spacing: 20) {
-                        JoystickMappingCard(joystick: "左摇杆", mapping: partitionInfo?.joystickMappings[.left])
-                        JoystickMappingCard(joystick: "右摇杆", mapping: partitionInfo?.joystickMappings[.right])
+                if !partition.joystickMappings.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("摇杆映射")
+                            .font(.headline)
+                        
+                        HStack(spacing: 20) {
+                            JoystickMappingCard(
+                                joystick: "左摇杆",
+                                mapping: partition.joystickMappings[.left]
+                            )
+                            JoystickMappingCard(
+                                joystick: "右摇杆",
+                                mapping: partition.joystickMappings[.right]
+                            )
+                        }
                     }
+                    .padding()
+                    .background(Color(NSColor.controlBackgroundColor))
+                    .cornerRadius(12)
                 }
-                .padding()
-                .background(Color(NSColor.controlBackgroundColor))
-                .cornerRadius(12)
+                
+                // 触摸板映射
+                if partition.touchpadMapping != nil {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("触摸板映射")
+                            .font(.headline)
+                        
+                        Text("已配置触摸板映射")
+                            .foregroundColor(.secondary)
+                    }
+                    .padding()
+                    .background(Color(NSColor.controlBackgroundColor))
+                    .cornerRadius(12)
+                }
+                
+                // 运动传感器映射
+                if partition.motionMapping != nil {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("运动传感器映射")
+                            .font(.headline)
+                        
+                        Text("已配置运动传感器映射")
+                            .foregroundColor(.secondary)
+                    }
+                    .padding()
+                    .background(Color(NSColor.controlBackgroundColor))
+                    .cornerRadius(12)
+                }
             }
             .padding()
         }
-        .onAppear {
-            loadPartitionInfo()
-        }
-    }
-    
-    private func loadPartitionInfo() {
-        // 这里应该从配置管理器加载分区信息
-        // 暂时使用示例数据
-        partitionInfo = createSamplePartitionInfo()
-        if let partition = partitionInfo {
-            mappings = partition.mappings
-        }
-    }
-    
-    private func createSamplePartitionInfo() -> PartitionNode {
-        let partition = PartitionNode(id: "sample", name: partitionName, type: .main)
-        partition.activationCombo = ["L1", "R1"]
-        
-        // 添加示例映射
-        partition.mappings["triangle"] = Mapping(button: "triangle", action: .keyPress(key: "A", modifiers: []))
-        partition.mappings["circle"] = Mapping(button: "circle", action: .keyPress(key: "B", modifiers: []))
-        partition.mappings["cross"] = Mapping(button: "cross", action: .keyPress(key: "C", modifiers: []))
-        partition.mappings["square"] = Mapping(button: "square", action: .keyPress(key: "D", modifiers: []))
-        
-        return partition
     }
     
     private func stringForPartitionType(_ type: PartitionType) -> String {
@@ -312,133 +350,3 @@ struct PartitionDetailView: View {
         }
     }
 }
-
-// 信息行组件
-struct InfoRow: View {
-    let label: String
-    let value: String
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text(label)
-                .font(.caption)
-                .foregroundColor(.secondary)
-            Text(value)
-                .font(.body)
-                .fontWeight(.medium)
-        }
-    }
-}
-
-// 映射卡片组件
-struct MappingCard: View {
-    let button: String
-    let mapping: Mapping
-    
-    var buttonDisplayName: String {
-        switch button {
-        case "triangle": return "△"
-        case "circle": return "○"
-        case "cross": return "×"
-        case "square": return "□"
-        default: return button.uppercased()
-        }
-    }
-    
-    var actionDescription: String {
-        switch mapping.action {
-        case .keyPress(let key, let modifiers):
-            if modifiers.isEmpty {
-                return "按键: \(key)"
-            } else {
-                return "按键: \(modifiers.joined(separator: "+"))+\(key)"
-            }
-        case .keyCombo(let keys):
-            return "组合键: \(keys.joined(separator: "+"))"
-        case .mouseMove(let sensitivity, let acceleration):
-            return "鼠标移动 (灵敏度: \(sensitivity))"
-        case .mouseClick(let button, let mode):
-            return "鼠标点击: \(button)"
-        case .mouseScroll(let axis, let sensitivity):
-            return "鼠标滚动 (\(axis))"
-        case .macro(let id):
-            return "宏: \(id)"
-        }
-    }
-    
-    var body: some View {
-        VStack(spacing: 8) {
-            Text(buttonDisplayName)
-                .font(.title2)
-                .fontWeight(.bold)
-            
-            Text(actionDescription)
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(Color(NSColor.windowBackgroundColor))
-        .cornerRadius(8)
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-        )
-    }
-}
-
-// 摇杆映射卡片组件
-struct JoystickMappingCard: View {
-    let joystick: String
-    let mapping: Mapping?
-    
-    var body: some View {
-        VStack(spacing: 12) {
-            Text(joystick)
-                .font(.headline)
-            
-            if let mapping = mapping {
-                switch mapping.action {
-                case .mouseMove(let sensitivity, let acceleration):
-                    VStack(spacing: 4) {
-                        Text("鼠标移动")
-                            .fontWeight(.medium)
-                        Text("灵敏度: \(sensitivity, specifier: "%.1f")")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Text("加速度: \(acceleration ? "开启" : "关闭")")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                case .mouseScroll(let axis, let sensitivity):
-                    VStack(spacing: 4) {
-                        Text("鼠标滚动")
-                            .fontWeight(.medium)
-                        Text("方向: \(axis == .horizontal ? "水平" : "垂直")")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Text("灵敏度: \(sensitivity, specifier: "%.1f")")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                default:
-                    Text("其他映射")
-                        .foregroundColor(.secondary)
-                }
-            } else {
-                Text("未配置")
-                    .foregroundColor(.secondary)
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(Color(NSColor.windowBackgroundColor))
-        .cornerRadius(12)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-        )
-    }
-}
-

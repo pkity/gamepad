@@ -117,20 +117,6 @@ struct InputVisualizationView: View {
         .padding()
     }
 }
-struct DataRow: View {
-    let label: String
-    let value: String
-    
-    var body: some View {
-        HStack {
-            Text(label)
-                .foregroundColor(.secondary)
-            Spacer()
-            Text(value)
-                .fontWeight(.medium)
-        }
-    }
-}
 
 struct GamepadDiagramView: View {
     @ObservedObject var viewModel: ContentViewModel
@@ -147,14 +133,14 @@ struct GamepadDiagramView: View {
                     .frame(width: 300, height: 150)
                 
                 // 按钮
-                ButtonView(name: "triangle", isPressed: viewModel.pressedButtons.contains("triangle"), x: 100, y: 30)
-                ButtonView(name: "circle", isPressed: viewModel.pressedButtons.contains("circle"), x: 130, y: 60)
-                ButtonView(name: "cross", isPressed: viewModel.pressedButtons.contains("cross"), x: 100, y: 90)
-                ButtonView(name: "square", isPressed: viewModel.pressedButtons.contains("square"), x: 70, y: 60)
+                GamepadButtonView(name: "triangle", isPressed: viewModel.pressedButtons.contains("triangle"), x: 100, y: 30)
+                GamepadButtonView(name: "circle", isPressed: viewModel.pressedButtons.contains("circle"), x: 130, y: 60)
+                GamepadButtonView(name: "cross", isPressed: viewModel.pressedButtons.contains("cross"), x: 100, y: 90)
+                GamepadButtonView(name: "square", isPressed: viewModel.pressedButtons.contains("square"), x: 70, y: 60)
                 
                 // 肩键
-                ButtonView(name: "L1", isPressed: viewModel.pressedButtons.contains("L1"), x: 30, y: 30)
-                ButtonView(name: "R1", isPressed: viewModel.pressedButtons.contains("R1"), x: 270, y: 30)
+                GamepadButtonView(name: "L1", isPressed: viewModel.pressedButtons.contains("L1"), x: 30, y: 30)
+                GamepadButtonView(name: "R1", isPressed: viewModel.pressedButtons.contains("R1"), x: 270, y: 30)
                 
                 // 摇杆
                 JoystickIndicator(position: viewModel.joystickPositions["leftJoystick"] ?? .zero, x: 60, y: 120)
@@ -165,57 +151,6 @@ struct GamepadDiagramView: View {
         .padding()
         .background(Color(NSColor.controlBackgroundColor))
         .cornerRadius(12)
-    }
-}
-
-struct ButtonView: View {
-    let name: String
-    let isPressed: Bool
-    let x: CGFloat
-    let y: CGFloat
-    
-    var displayName: String {
-        switch name {
-        case "triangle": return "△"
-        case "circle": return "○"
-        case "cross": return "×"
-        case "square": return "□"
-        default: return name
-        }
-    }
-    
-    var body: some View {
-        Circle()
-            .fill(isPressed ? Color.blue : Color.gray.opacity(0.5))
-            .frame(width: 30, height: 30)
-            .overlay(
-                Text(displayName)
-                    .font(.caption)
-                    .foregroundColor(.white)
-            )
-            .position(x: x, y: y)
-    }
-}
-
-struct JoystickIndicator: View {
-    let position: CGPoint
-    let x: CGFloat
-    let y: CGFloat
-    
-    var body: some View {
-        ZStack {
-            // 摇杆底座
-            Circle()
-                .stroke(Color.gray, lineWidth: 2)
-                .frame(width: 40, height: 40)
-            
-            // 摇杆位置
-            Circle()
-                .fill(Color.blue)
-                .frame(width: 20, height: 20)
-                .offset(x: position.x * 15, y: -position.y * 15)
-        }
-        .position(x: x, y: y)
     }
 }
 

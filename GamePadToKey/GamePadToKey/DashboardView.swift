@@ -4,9 +4,13 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct DashboardView: View {
     @ObservedObject var viewModel: ContentViewModel
+    @State private var showImportDialog = false
+    @State private var showExportDialog = false
+    @State private var showConfigEditor = false
     
     var body: some View {
         ScrollView {
@@ -24,21 +28,21 @@ struct DashboardView: View {
                         title: "导入配置",
                         icon: "square.and.arrow.down",
                         color: .green,
-                        action: { /* 导入配置 */ }
+                        action: { showImportDialog = true }
                     )
                     
                     QuickActionButton(
                         title: "导出配置",
                         icon: "square.and.arrow.up",
                         color: .orange,
-                        action: { /* 导出配置 */ }
+                        action: { showExportDialog = true }
                     )
                     
                     QuickActionButton(
                         title: "编辑配置",
                         icon: "pencil",
                         color: .purple,
-                        action: { viewModel.showConfigEditor = true }
+                        action: { showConfigEditor = true }
                     )
                 }
                 .padding(.top)
@@ -110,169 +114,36 @@ struct DashboardView: View {
             NewConfigDialog(viewModel: viewModel)
         }
         // 配置编辑器
-        .sheet(isPresented: $viewModel.showConfigEditor) {
+        .sheet(isPresented: $showConfigEditor) {
             ConfigEditorView()
         }
+        // 导入文件选择器
+        .fileImporter(
+            isPresented: $showImportDialog,
+            allowedContentTypes: [.json],
+            allowsMultipleSelection: false
+        ) { result in
+            handleImportResult(result)
+        }
+        // 导出文件选择器
+        .fileExporter(
+            isPresented: $showExportDialog,
+            document: EmptyDocument(),
+            contentType: .json,
+            defaultFilename: "configuration"
+        ) { result in
+            handleExportResult(result)
+        }
+    }
+    
+    private func handleImportResult(_ result: Result<[URL], Error>) {
+        // 处理导入结果
+        print("导入结果: \(result)")
+    }
+    
+    private func handleExportResult(_ result: Result<URL, Error>) {
+        // 处理导出结果
+        print("导出结果: \(result)")
     }
 }
 
-// 新建配置对话框
-struct NewConfigDialog: View {
-    @ObservedObject var viewModel: ContentViewModel
-    @Environment(\.presentationMode) var presentationMode
-    
-    var body: some View {
-        VStack(spacing: 20) {
-            Text("新建配置")
-                .font(.headline)
-            
-            VStack(alignment: .leading, spacing: 8) {
-                Text("配置名称")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                
-                TextField("输入配置名称", text: $viewModel.newConfigName)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: 300)
-            }
-            
-            HStack(spacing: 20) {
-                Button("取消") {
-                    presentationMode.wrappedValue.dismiss()
-                }
-                .keyboardShortcut(.cancelAction)
-                
-                Button("创建") {
-                    viewModel.createNewConfigWithName()
-                    presentationMode.wrappedValue.dismiss()
-                }
-                .keyboardShortcut(.defaultAction)
-                .disabled(viewModel.newConfigName.isEmpty)
-            }
-        }
-        .padding()
-        .frame(width: 400, height: 200)
-    }
-}
-
-// 配置编辑器视图（简化版）
-struct ConfigEditorView: View {
-    @Environment(\.presentationMode) var presentationMode
-    
-    var body: some View {
-        VStack {
-            Text("配置编辑器")
-                .font(.headline)
-                .padding()
-            
-            Text("配置编辑器功能正在开发中...")
-                .foregroundColor(.secondary)
-            
-            Button("关闭") {
-                presentationMode.wrappedValue.dismiss()
-            }
-            .padding()
-        }
-        .frame(width: 400, height: 300)
-    }
-}
-
-struct StatusCard: View {
-    let title: String
-    let value: String
-    let icon: String
-    let color: Color
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Image(systemName: icon)
-                    .foregroundColor(color)
-                
-                Text(title)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            Text(value)
-                .font(.title2)
-                .fontWeight(.medium)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(Color(NSColor.controlBackgroundColor))
-        .cornerRadius(12)
-    }
-}
-
-struct ButtonStatusView: View {
-    let name: String
-    let isPressed: Bool
-    
-    var displayName: String {
-        switch name {
-        case "triangle": return "△"
-        case "circle": return "○"
-        case "cross": return "×"
-        case "square": return "□"
-        default: return name.uppercased()
-        }
-    }
-    
-    var body: some View {
-        VStack(spacing: 4) {
-            Text(displayName)
-                .font(.caption)
-                .fontWeight(.medium)
-            
-            Circle()
-                .fill(isPressed ? Color.green : Color.gray.opacity(0.3))
-                .frame(width: 24, height: 24)
-                .overlay(
-                    Circle()
-                        .stroke(isPressed ? Color.green : Color.gray, lineWidth: 1)
-                )
-        }
-        .frame(height: 60)
-        .background(Color(NSColor.windowBackgroundColor))
-        .cornerRadius(8)
-    }
-}
-
-struct JoystickView: View {
-    let title: String
-    let position: CGPoint
-    
-    var body: some View {
-        VStack(spacing: 12) {
-            Text(title)
-                .font(.headline)
-            
-            ZStack {
-                // 背景圆
-                Circle()
-                    .stroke(Color.gray.opacity(0.3), lineWidth: 2)
-                    .frame(width: 100, height: 100)
-                
-                // 死区圆
-                Circle()
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                    .frame(width: 30, height: 30)
-                
-                // 摇杆位置
-                Circle()
-                    .fill(Color.blue)
-                    .frame(width: 20, height: 20)
-                    .offset(x: position.x * 40, y: -position.y * 40)
-            }
-            
-            Text("X: \(position.x, specifier: "%.2f"), Y: \(position.y, specifier: "%.2f")")
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(Color(NSColor.controlBackgroundColor))
-        .cornerRadius(12)
-    }
-}
