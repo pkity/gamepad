@@ -38,7 +38,7 @@ struct DashboardView: View {
                         title: "编辑配置",
                         icon: "pencil",
                         color: .purple,
-                        action: { /* 编辑配置 */ }
+                        action: { viewModel.showConfigEditor = true }
                     )
                 }
                 .padding(.top)
@@ -105,6 +105,75 @@ struct DashboardView: View {
             }
             .padding()
         }
+        // 新建配置对话框
+        .sheet(isPresented: $viewModel.showNewConfigDialog) {
+            NewConfigDialog(viewModel: viewModel)
+        }
+        // 配置编辑器
+        .sheet(isPresented: $viewModel.showConfigEditor) {
+            ConfigEditorView()
+        }
+    }
+}
+
+// 新建配置对话框
+struct NewConfigDialog: View {
+    @ObservedObject var viewModel: ContentViewModel
+    @Environment(\.presentationMode) var presentationMode
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("新建配置")
+                .font(.headline)
+            
+            VStack(alignment: .leading, spacing: 8) {
+                Text("配置名称")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                TextField("输入配置名称", text: $viewModel.newConfigName)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(width: 300)
+            }
+            
+            HStack(spacing: 20) {
+                Button("取消") {
+                    presentationMode.wrappedValue.dismiss()
+                }
+                .keyboardShortcut(.cancelAction)
+                
+                Button("创建") {
+                    viewModel.createNewConfigWithName()
+                    presentationMode.wrappedValue.dismiss()
+                }
+                .keyboardShortcut(.defaultAction)
+                .disabled(viewModel.newConfigName.isEmpty)
+            }
+        }
+        .padding()
+        .frame(width: 400, height: 200)
+    }
+}
+
+// 配置编辑器视图（简化版）
+struct ConfigEditorView: View {
+    @Environment(\.presentationMode) var presentationMode
+    
+    var body: some View {
+        VStack {
+            Text("配置编辑器")
+                .font(.headline)
+                .padding()
+            
+            Text("配置编辑器功能正在开发中...")
+                .foregroundColor(.secondary)
+            
+            Button("关闭") {
+                presentationMode.wrappedValue.dismiss()
+            }
+            .padding()
+        }
+        .frame(width: 400, height: 300)
     }
 }
 

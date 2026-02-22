@@ -71,6 +71,10 @@ struct ConfigManagementView: View {
         .onAppear {
             refreshConfigs()
         }
+        // 新建配置对话框
+        .sheet(isPresented: $viewModel.showNewConfigDialog) {
+            NewConfigDialog(viewModel: viewModel)
+        }
     }
     
     private func refreshConfigs() {

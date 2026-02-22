@@ -16,6 +16,9 @@ class ContentViewModel: ObservableObject {
     @Published var isCharging = false
     @Published var pressedButtons: Set<String> = []
     @Published var joystickPositions: [String: CGPoint] = [:]
+    @Published var showConfigEditor = false // 新增：控制配置编辑器显示
+    @Published var newConfigName = "" // 新增：新配置名称
+    @Published var showNewConfigDialog = false // 新增：显示新建配置对话框
     
     private var cancellables = Set<AnyCancellable>()
     private let inputProcessor = DualSenseInputProcessor()
@@ -42,11 +45,43 @@ class ContentViewModel: ObservableObject {
     }
     
     func createNewConfig() {
+        // 显示新建配置对话框
+        showNewConfigDialog = true
+        newConfigName = ""
+    }
+    
+    func createNewConfigWithName() {
+        guard !newConfigName.isEmpty else {
+            statusMessage = "配置名称不能为空"
+            return
+        }
+        
         // 创建新配置
         let newConfig = Configuration.createDefault()
+        let updatedConfig = Configuration(
+            configVersion: newConfig.configVersion,
+            name: newConfigName,
+            author: "用户",
+            description: "新建的配置",
+            globalSettings: newConfig.globalSettings,
+            keyboardLayout: newConfig.keyboardLayout,
+            partitions: newConfig.partitions
+        )
+        
         do {
-            try configManager.saveConfiguration(newConfig)
-            statusMessage = "已创建新配置"
+            try configManager.saveConfiguration(updatedConfig)
+            statusMessage = "已创建新配置: \(newConfigName)"
+            
+            // 加载新配置
+            loadConfig(newConfigName)
+            
+            // 关闭对话框
+            showNewConfigDialog = false
+            
+            // 显示成功消息
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.statusMessage = "已切换到配置: \(self.newConfigName)"
+            }
         } catch {
             statusMessage = "创建配置失败: \(error.localizedDescription)"
         }
@@ -57,6 +92,11 @@ class ContentViewModel: ObservableObject {
             let config = try configManager.loadConfiguration(named: name)
             partitionEngine.loadConfiguration(config)
             statusMessage = "已加载配置: \(name)"
+            
+            // 更新当前分区显示
+            if let rootPartition = config.rootPartition {
+                currentPartition = rootPartition.name
+            }
         } catch {
             statusMessage = "加载配置失败: \(error.localizedDescription)"
         }
