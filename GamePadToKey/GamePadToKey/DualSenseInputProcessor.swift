@@ -193,12 +193,14 @@ public class DualSenseInputProcessor {
     private func setupButtonHandlers(_ gamepad: GCDualSenseGamepad) {
         debugLog("设置按钮处理器")
         
-        // 定义按钮映射 - GCDualSenseGamepad 使用 buttonA/B/X/Y 而不是 buttonTriangle/Circle/Cross/Square
+        // 修复按钮映射 - 根据 PlayStation 布局
+        // DualSense 的物理布局：△(上)、○(右)、×(下)、□(左)
+        // GCDualSenseGamepad 映射：buttonA=×、buttonB=○、buttonX=□、buttonY=△
         let buttonMappings: [(String, GCControllerButtonInput?)] = [
-            ("triangle", gamepad.buttonA),      // △ 按钮对应 buttonA
-            ("circle", gamepad.buttonB),        // ○ 按钮对应 buttonB
-            ("cross", gamepad.buttonX),         // × 按钮对应 buttonX
-            ("square", gamepad.buttonY),        // □ 按钮对应 buttonY
+            ("triangle", gamepad.buttonY),      // △ 按钮对应 buttonY ✅ 修复
+            ("circle", gamepad.buttonB),        // ○ 按钮对应 buttonB ✓ 正确
+            ("cross", gamepad.buttonA),         // × 按钮对应 buttonA ✅ 修复
+            ("square", gamepad.buttonX),        // □ 按钮对应 buttonX ✅ 修复
             ("L1", gamepad.leftShoulder),
             ("R1", gamepad.rightShoulder),
             ("L2", gamepad.leftTrigger),
@@ -354,12 +356,12 @@ public class DualSenseInputProcessor {
     private func checkButtonStates() {
         guard let gamepad = dualSense else { return }
         
-        // 检查所有按钮的当前状态
+        // 检查所有按钮的当前状态 - 使用修复后的映射
         let buttons: [(String, GCControllerButtonInput?)] = [
-            ("triangle", gamepad.buttonA),
+            ("triangle", gamepad.buttonY),      // 修复
             ("circle", gamepad.buttonB),
-            ("cross", gamepad.buttonX),
-            ("square", gamepad.buttonY),
+            ("cross", gamepad.buttonA),         // 修复
+            ("square", gamepad.buttonX),        // 修复
             ("L1", gamepad.leftShoulder),
             ("R1", gamepad.rightShoulder),
             ("L2", gamepad.leftTrigger),
