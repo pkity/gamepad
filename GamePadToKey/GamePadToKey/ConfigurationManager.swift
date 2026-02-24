@@ -198,11 +198,28 @@ class ConfigurationManager {
         node.parent = parent
         node.activationCombo = Set(partition.activationCombo)
         node.bounds = partition.bounds
+        node.feedback = partition.feedback
         
-        // 构建映射
+        // 处理所有映射配置
         for mappingConfig in partition.mappings {
             let mapping = Mapping(from: mappingConfig)
-            node.mappings[mappingConfig.button] = mapping
+            
+            // 根据按钮类型分配到不同的映射表
+            switch mappingConfig.button {
+            case "left_joystick":
+                node.addJoystickMapping(for: .left, mapping: mapping)
+            case "right_joystick":
+                node.addJoystickMapping(for: .right, mapping: mapping)
+            case "touchpad":
+                node.setTouchpadMapping(mapping)
+            case "motion":
+                node.setMotionMapping(mapping)
+            default:
+                // 普通按钮映射
+                if let button = mapping.button {
+                    node.mappings[button] = mapping
+                }
+            }
         }
         
         // 构建子节点
@@ -213,4 +230,11 @@ class ConfigurationManager {
         
         return node
     }
+    
+    // 创建带摇杆支持的默认配置
+    public func createDefaultConfigurationWithJoystickSupport() throws {
+        let config = Configuration.createCompleteDefault()
+        try saveConfiguration(config)
+    }
 }
+

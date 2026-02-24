@@ -24,12 +24,13 @@ struct GamePadToKeyApp: App {
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-    private let inputProcessor = DualSenseInputProcessor()
-    private let partitionEngine = PartitionEngine()
-    private let outputSimulator = OutputSimulator()
-    private let feedbackController = DualSenseFeedbackController()
-    private let configManager = ConfigurationManager()
-    private let permissionManager = PermissionManager()
+    // 将私有属性改为 internal
+    internal let inputProcessor = DualSenseInputProcessor()
+    internal let partitionEngine = PartitionEngine()
+    internal let outputSimulator = OutputSimulator()
+    internal let feedbackController = DualSenseFeedbackController()
+    internal let configManager = ConfigurationManager()
+    internal let permissionManager = PermissionManager()
     
     private var statusItem: NSStatusItem?
     
@@ -89,17 +90,49 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private func loadDefaultConfiguration() {
         do {
-            let config = try configManager.loadConfiguration(named: "default")
-            partitionEngine.loadConfiguration(config)
+            // 尝试加载现有配置
+            let configs = configManager.getAvailableConfigs()
+            if configs.contains("完整默认配置") {
+                let config = try configManager.loadConfiguration(named: "完整默认配置")
+                partitionEngine.loadConfiguration(config)
+                print("已加载完整默认配置")
+                
+                // 调试输出
+                DebugTools.checkConfiguration(config)
+            } else {
+                // 创建完整默认配置
+                try configManager.createDefaultConfigurationWithJoystickSupport()
+                let config = try configManager.loadConfiguration(named: "完整默认配置")
+                partitionEngine.loadConfiguration(config)
+                print("已创建并加载完整默认配置")
+                
+                // 调试输出
+                DebugTools.checkConfiguration(config)
+            }
         } catch {
-            print("加载默认配置失败: \(error)")
-            // 创建默认配置
-            createDefaultConfiguration()
+            print("加载配置失败: \(error)")
+            // 创建最基本的配置
+            createBasicConfiguration()
+        }
+    }
+    
+    private func createBasicConfiguration() {
+        let config = Configuration.createCompleteDefault()
+        do {
+            try configManager.saveConfiguration(config)
+            partitionEngine.loadConfiguration(config)
+            print("已创建基本配置")
+        } catch {
+            print("创建基本配置失败: \(error)")
         }
     }
     
     private func setupInputProcessing() {
         inputProcessor.delegate = self
+        
+        // 添加调试
+        DebugTools.checkInputProcessor(inputProcessor)
+        
         do {
             try inputProcessor.startCapture()
         } catch {
@@ -111,17 +144,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 注册系统事件监听
         NSEvent.addGlobalMonitorForEvents(matching: [.keyDown, .keyUp]) { event in
             // 可以在这里添加系统事件处理
-        }
-    }
-    
-    private func createDefaultConfiguration() {
-        // 创建默认配置
-        let defaultConfig = Configuration.createDefault()
-        do {
-            try configManager.saveConfiguration(defaultConfig)
-            partitionEngine.loadConfiguration(defaultConfig)
-        } catch {
-            print("创建默认配置失败: \(error)")
         }
     }
     

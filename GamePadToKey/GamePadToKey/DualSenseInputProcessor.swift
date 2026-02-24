@@ -14,7 +14,6 @@ public protocol InputProcessorDelegate: AnyObject {
     func motionUpdated(gyro: (x: Double, y: Double, z: Double),
                       acceleration: (x: Double, y: Double, z: Double))
 }
-
 public class DualSenseInputProcessor {
     public weak var delegate: InputProcessorDelegate?
     
@@ -35,8 +34,8 @@ public class DualSenseInputProcessor {
     private var lastTouchpadPosition: CGPoint?
     private var isTouchpadTouching = false
     
-    // 添加调试日志
-    private let enableDebugLogging = true
+    // 将私有改为 internal 以允许外部访问
+    internal let enableDebugLogging = true
     
     public init() {
         // 初始化时监听手柄连接
@@ -410,3 +409,4 @@ public class DualSenseInputProcessor {
         stopCapture()
     }
 }
+

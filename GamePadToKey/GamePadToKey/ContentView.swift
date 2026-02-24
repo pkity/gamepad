@@ -71,6 +71,13 @@ struct ContentView: View {
                         Label("分区", systemImage: "square.grid.3x3")
                     }
                     .tag(3)
+                
+                // 测试页面
+                JoystickTestView(viewModel: viewModel)
+                    .tabItem {
+                        Label("测试", systemImage: "testtube.2")
+                    }
+                    .tag(4)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
@@ -112,4 +119,3 @@ struct ContentView: View {
         }
     }
 }
-
