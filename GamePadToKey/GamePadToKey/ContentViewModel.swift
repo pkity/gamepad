@@ -1,190 +1,140 @@
-//
-//  ContentViewModel.swift
-//  GamePadToKey
-//
-
-import Foundation
 import SwiftUI
 import Combine
 import GameController
 
 class ContentViewModel: ObservableObject {
-    @Published var isConnected = false
-    @Published var statusMessage = "等待手柄连接..."
-    @Published var currentPartition: String?
-    @Published var batteryLevel: Double = 0
-    @Published var isCharging = false
-    @Published var pressedButtons: Set<String> = []
+    
+    // MARK: - Connection and status
+    @Published var isConnected: Bool = false
+    @Published var statusMessage: String = ""
+    @Published var batteryLevel: Float = 0.0
+    @Published var isCharging: Bool = false
+    
+    // MARK: - Input state
+    @Published var pressedButtons: [String] = []
     @Published var joystickPositions: [String: CGPoint] = [:]
-    @Published var showConfigEditor = false // 新增：控制配置编辑器显示
-    @Published var newConfigName = "" // 新增：新配置名称
-    @Published var showNewConfigDialog = false // 新增：显示新建配置对话框
+    @Published var touchpadPosition: CGPoint = .zero
+    @Published var touchpadTouching: Bool = false
     
-    private var cancellables = Set<AnyCancellable>()
-    private let inputProcessor = DualSenseInputProcessor()
-    private let partitionEngine = PartitionEngine()
-    private let configManager = ConfigurationManager()
+    private var gamepad: GCController?
+    private var batteryTimer: AnyCancellable?
     
-    init() {
-        setupObservers()
-        setupInputProcessor()
-    }
+    // Keep previous joystick values to avoid redundant updates
+    private var previousLeftStick: CGPoint = .zero
+    private var previousRightStick: CGPoint = .zero
+    private let joystickDeadzone: CGFloat = 0.05
     
+    // MARK: - Lifecycle
     func startMonitoring() {
-        do {
-            try inputProcessor.startCapture()
-            statusMessage = "监控已启动"
-        } catch {
-            statusMessage = "启动监控失败: \(error.localizedDescription)"
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(controllerDidConnect),
+            name: .GCControllerDidConnect,
+            object: nil
+        )
+        if let current = GCController.controllers().first {
+            connectTo(controller: current)
         }
+        isConnected = (GCController.controllers().first != nil)
+        statusMessage = isConnected ? "已连接" : "等待手柄..."
     }
     
     func stopMonitoring() {
-        inputProcessor.stopCapture()
-        statusMessage = "监控已停止"
+        NotificationCenter.default.removeObserver(self, name: .GCControllerDidConnect, object: nil)
+        batteryTimer?.cancel()
     }
     
-    func createNewConfig() {
-        // 显示新建配置对话框
-        showNewConfigDialog = true
-        newConfigName = ""
-    }
-    
-    func createNewConfigWithName() {
-        guard !newConfigName.isEmpty else {
-            statusMessage = "配置名称不能为空"
-            return
+    @objc private func controllerDidConnect(_ notification: Notification) {
+        if let controller = notification.object as? GCController {
+            connectTo(controller: controller)
         }
+    }
+    
+    private func connectTo(controller: GCController) {
+        self.gamepad = controller
         
-        // 创建新配置
-        let newConfig = Configuration.createDefault()
-        let updatedConfig = Configuration(
-            configVersion: newConfig.configVersion,
-            name: newConfigName,
-            author: "用户",
-            description: "新建的配置",
-            globalSettings: newConfig.globalSettings,
-            keyboardLayout: newConfig.keyboardLayout,
-            partitions: newConfig.partitions
-        )
-        
-        do {
-            try configManager.saveConfiguration(updatedConfig)
-            statusMessage = "已创建新配置: \(newConfigName)"
-            
-            // 加载新配置
-            loadConfig(newConfigName)
-            
-            // 关闭对话框
-            showNewConfigDialog = false
-            
-            // 显示成功消息
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.statusMessage = "已切换到配置: \(self.newConfigName)"
-            }
-        } catch {
-            statusMessage = "创建配置失败: \(error.localizedDescription)"
-        }
-    }
-    
-    func loadConfig(_ name: String) {
-        do {
-            let config = try configManager.loadConfiguration(named: name)
-            partitionEngine.loadConfiguration(config)
-            statusMessage = "已加载配置: \(name)"
-            
-            // 更新当前分区显示
-            if let rootPartition = config.rootPartition {
-                currentPartition = rootPartition.name
-            }
-        } catch {
-            statusMessage = "加载配置失败: \(error.localizedDescription)"
-        }
-    }
-    
-    private func setupObservers() {
-        // 监听分区激活
-        NotificationCenter.default.publisher(for: NSNotification.Name("partitionActivated"))
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] notification in
-                if let partition = notification.object as? PartitionNode {
-                    self?.currentPartition = partition.name
+        // Battery monitoring
+        batteryTimer?.cancel()
+        batteryTimer = Timer.publish(every: 1.0, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self = self, let battery = self.gamepad?.battery else { return }
+                self.batteryLevel = battery.batteryLevel
+                switch battery.batteryState {
+                case .charging:
+                    self.isCharging = true
+                case .full:
+                    self.isCharging = false
+                case .discharging, .unknown:
+                    self.isCharging = false
+                @unknown default:
+                    self.isCharging = false
                 }
             }
-            .store(in: &cancellables)
         
-        // 监听分区导航
-        NotificationCenter.default.publisher(for: NSNotification.Name("partitionNavigated"))
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] notification in
-                if let partition = notification.object as? PartitionNode {
-                    self?.currentPartition = partition.name
-                }
-            }
-            .store(in: &cancellables)
+        guard let extended = controller.extendedGamepad else { return }
         
-        // 监听手柄连接状态
-        NotificationCenter.default.publisher(for: .GCControllerDidConnect)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.isConnected = true
-                self?.statusMessage = "手柄已连接"
-            }
-            .store(in: &cancellables)
+        // Button mappings
+        let buttonMap: [(GCControllerButtonInput, String)] = [
+            (extended.buttonA, "cross"),
+            (extended.buttonB, "circle"),
+            (extended.buttonX, "square"),
+            (extended.buttonY, "triangle"),
+            (extended.leftShoulder, "L1"),
+            (extended.rightShoulder, "R1"),
+            (extended.leftTrigger, "L2"),
+            (extended.rightTrigger, "R2"),
+            (extended.leftThumbstickButton!, "L3"),
+            (extended.rightThumbstickButton!, "R3"),
+            (extended.dpad.up, "dpadUp"),
+            (extended.dpad.down, "dpadDown"),
+            (extended.dpad.left, "dpadLeft"),
+            (extended.dpad.right, "dpadRight"),
+            (extended.buttonMenu, "options"),
+            (extended.buttonOptions!, "share")
+        ]
         
-        NotificationCenter.default.publisher(for: .GCControllerDidDisconnect)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.isConnected = false
-                self?.statusMessage = "手柄已断开"
+        for (input, name) in buttonMap {
+            input.valueChangedHandler = { [weak self] (_, _, _) in
+                self?.updateButton(name: name, pressed: input.isPressed)
             }
-            .store(in: &cancellables)
+        }
+        
+        // Joysticks – with deadzone filtering to avoid excessive updates
+        extended.leftThumbstick.valueChangedHandler = { [weak self] (_, x, y) in
+            self?.updateJoystick(name: "left", x: CGFloat(x), y: CGFloat(y))
+        }
+        extended.rightThumbstick.valueChangedHandler = { [weak self] (_, x, y) in
+            self?.updateJoystick(name: "right", x: CGFloat(x), y: CGFloat(y))
+        }
+        
+        // Touchpad support will be added later.
+        // For now, touchpadPosition and touchpadTouching remain at zero/false.
+        
+        isConnected = true
+        statusMessage = "手柄已连接"
     }
     
-    private func setupInputProcessor() {
-        inputProcessor.delegate = self
-    }
-}
-
-extension ContentViewModel: InputProcessorDelegate {
-    func buttonStateChanged(name: String, pressed: Bool) {
-        DispatchQueue.main.async {
-            if pressed {
-                self.pressedButtons.insert(name)
-            } else {
-                self.pressedButtons.remove(name)
+    private func updateButton(name: String, pressed: Bool) {
+        if pressed {
+            if !pressedButtons.contains(name) {
+                pressedButtons.append(name)
             }
-            
-            // 创建输入事件
-            let event = InputEvent.buttonPress(button: name, pressed: pressed)
-            self.partitionEngine.handleInput(event)
+        } else {
+            pressedButtons.removeAll { $0 == name }
         }
     }
     
-    func joystickMoved(joystick: JoystickType, position: CGPoint) {
-        DispatchQueue.main.async {
-            let key = joystick == .left ? "leftJoystick" : "rightJoystick"
-            self.joystickPositions[key] = position
-            
-            // 创建输入事件
-            let event = InputEvent.joystickMove(joystick: joystick, position: position)
-            self.partitionEngine.handleInput(event)
-        }
-    }
-    
-    func touchpadTouched(position: CGPoint, touching: Bool) {
-        DispatchQueue.main.async {
-            // 创建输入事件
-            let event = InputEvent.touchpadTouch(position: position, touching: touching)
-            self.partitionEngine.handleInput(event)
-        }
-    }
-    
-    func motionUpdated(gyro: (x: Double, y: Double, z: Double), acceleration: (x: Double, y: Double, z: Double)) {
-        DispatchQueue.main.async {
-            // 创建输入事件
-            let event = InputEvent.motion(gyro: gyro, acceleration: acceleration)
-            self.partitionEngine.handleInput(event)
+    private func updateJoystick(name: String, x: CGFloat, y: CGFloat) {
+        let point = CGPoint(x: x, y: y)
+        let previous: CGPoint = (name == "left") ? previousLeftStick : previousRightStick
+        
+        let dx = abs(point.x - previous.x)
+        let dy = abs(point.y - previous.y)
+        if dx > joystickDeadzone || dy > joystickDeadzone {
+            if name == "left" { previousLeftStick = point }
+            else { previousRightStick = point }
+            joystickPositions[name] = point
         }
     }
 }

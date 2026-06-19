@@ -29,33 +29,10 @@
 		185EC1B42F420F1D00FFB4AE /* GamePadToKeyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GamePadToKeyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		185EC1D42F4211DC00FFB4AE /* Exceptions for "GamePadToKey" folder in "GamePadToKey" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 185EC19C2F420F1B00FFB4AE /* GamePadToKey */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		185EC19F2F420F1B00FFB4AE /* GamePadToKey */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				185EC1D42F4211DC00FFB4AE /* Exceptions for "GamePadToKey" folder in "GamePadToKey" target */,
-			);
 			path = GamePadToKey;
-			sourceTree = "<group>";
-		};
-		185EC1AD2F420F1D00FFB4AE /* GamePadToKeyTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = GamePadToKeyTests;
-			sourceTree = "<group>";
-		};
-		185EC1B72F420F1D00FFB4AE /* GamePadToKeyUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = GamePadToKeyUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -89,8 +66,6 @@
 			isa = PBXGroup;
 			children = (
 				185EC19F2F420F1B00FFB4AE /* GamePadToKey */,
-				185EC1AD2F420F1D00FFB4AE /* GamePadToKeyTests */,
-				185EC1B72F420F1D00FFB4AE /* GamePadToKeyUITests */,
 				185EC19E2F420F1B00FFB4AE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -143,9 +118,6 @@
 			dependencies = (
 				185EC1AC2F420F1D00FFB4AE /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				185EC1AD2F420F1D00FFB4AE /* GamePadToKeyTests */,
-			);
 			name = GamePadToKeyTests;
 			packageProductDependencies = (
 			);
@@ -165,9 +137,6 @@
 			);
 			dependencies = (
 				185EC1B62F420F1D00FFB4AE /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				185EC1B72F420F1D00FFB4AE /* GamePadToKeyUITests */,
 			);
 			name = GamePadToKeyUITests;
 			packageProductDependencies = (
@@ -424,7 +393,7 @@
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GamePadToKey/Info.plist;
 				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
@@ -468,7 +437,7 @@
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GamePadToKey/Info.plist;
 				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
